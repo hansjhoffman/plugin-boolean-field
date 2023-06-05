@@ -84,10 +84,15 @@ main = launchAff_ $ runSpec [consoleReporter] do
         actual = parse "yx"
         expected = "Expected end of string"
       (fromLeft "uh-oh" actual) `shouldEqual` expected
-    it "should fail on 't' shorthand" do
+    it "should fail on '1' shorthand" do
       let
         actual = parse "10"
         expected = "Expected end of string"
+      (fromLeft "uh-oh" actual) `shouldEqual` expected
+    it "should fail on unknown shorthand" do
+      let
+        actual = parse "x"
+        expected = "Expected one of ['f','n','0']"
       (fromLeft "uh-oh" actual) `shouldEqual` expected
     it "should fail on 'f' shorthand" do
       let
