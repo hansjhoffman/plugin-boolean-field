@@ -9,5 +9,5 @@
 , license = ""
 , packages = ./packages.dhall
 , repository = ""
-, sources = [ "src/**/*.purs", "test/**/*.purs" ]
+, sources = [ "src/**/*.purs" ]
 }
