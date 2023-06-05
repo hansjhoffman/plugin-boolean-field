@@ -1,49 +1,54 @@
-module Main where
+module Main (parse) where
 
 import Prelude
 
+import Data.Bifunctor (lmap)
+import Data.Either (Either)
 import Parsing (Parser)
 import Parsing as Parsing
+import Parsing.Combinators ((<?>))
 import Parsing.Combinators as Parsing.Combinators
 import Parsing.String as Parsing.String
 import Parsing.String.Basic as Parsing.String.Basic
 import Control.Alt ((<|>))
 
-data BoolStr
-  = TrueStr String
-  | FalseStr String
-
-pTrue :: Parser String BoolStr
-pTrue = do
-  val <- Parsing.String.Basic.oneOf [ 't', 'y', '1' ]
-  pure $ TrueStr val
-
-pFalse :: Parser String BoolStr
-pFalse = do
-  val <- Parsing.String.Basic.oneOf [ 'f', 'n', '0' ]
-  pure $ FalseStr val
-
--- pTrue :: Parser String Char
--- pTrue = Parsing.String.Basic.oneOf [ 't', 'y', '1' ]
-
--- pFalse :: Parser String Char
--- pFalse = Parsing.String.Basic.oneOf [ 'f', 'n', '0' ]
-
--- pTest :: Parser String String
--- pTest = Parsing.String.string "yes"
-
-pBoolean :: Parser String Boolean
-pBoolean = do
-  _ <- pTrue <|> pFalse
-  Parsing.String.eof
+pTrueShorthand :: Parser String Boolean
+pTrueShorthand = do
+  _ <- Parsing.String.Basic.oneOf [ 't', 'y', '1' ]
+  Parsing.String.eof <?> "end of string"
   pure true
 
--- Parsing.Combinators.try (pTrue $> true <|> pFalse $> false)
+pFalseShorthand :: Parser String Boolean
+pFalseShorthand = do
+  _ <- Parsing.String.Basic.oneOf [ 'f', 'n', '0' ]
+  Parsing.String.eof <?> "end of string"
+  pure false
 
--- parse :: String -> Either String Boolean
--- parse input = do
---   pTrue $> true <|> pFalse $> false
+pTrue :: Parser String Boolean
+pTrue = do
+  _ <- Parsing.String.string "on"
+    <|> Parsing.String.string "true"
+    <|> Parsing.String.string "yes"
+  Parsing.String.eof <?> "end of string"
+  pure true
 
--- main :: Effect Unit
-main = do
-  Parsing.runParser "y" pBoolean
+pFalse :: Parser String Boolean
+pFalse = do
+  _ <- Parsing.String.string "off"
+    <|> Parsing.String.string "false"
+    <|> Parsing.String.string "no"
+  Parsing.String.eof <?> "end of string"
+  pure false
+
+-- | Parse a string as a possible boolean.
+parse :: String -> Either String Boolean
+parse = lmap Parsing.parseErrorMessage <<< flip Parsing.runParser parser
+
+-- | INTERNAL
+-- |
+-- | A parser for Flatfile specific boolean.
+parser :: Parser String Boolean
+parser = pTrue
+  <|> pFalse
+  <|> pTrueShorthand
+  <|> pFalseShorthand
