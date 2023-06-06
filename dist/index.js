@@ -933,6 +933,13 @@ var withErrorMessage = function(p) {
     return alt2(p)(fail("Expected " + msg));
   };
 };
+var $$try = function(v) {
+  return function(v1, more, lift3, $$throw, done) {
+    return v(v1, more, lift3, function(v2, err) {
+      return $$throw(new ParseState(v2.value0, v2.value1, v1.value2), err);
+    }, done);
+  };
+};
 
 // output/Data.Array/foreign.js
 var replicateFill = function(count) {
@@ -1693,26 +1700,26 @@ var discard2 = /* @__PURE__ */ discard(discardUnit)(bindParserT);
 var pure2 = /* @__PURE__ */ pure(applicativeParserT);
 var alt3 = /* @__PURE__ */ alt(altParserT);
 var pTrueShorthand = /* @__PURE__ */ bind2(/* @__PURE__ */ oneOf2(["t", "y", "1"]))(function() {
-  return discard2(withErrorMessage(eof)("end of string"))(function() {
+  return discard2(eof)(function() {
     return pure2(true);
   });
 });
 var pTrueLonghand = /* @__PURE__ */ bind2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("on"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("true"))(/* @__PURE__ */ string("yes"))))(function() {
-  return discard2(withErrorMessage(eof)("end of string"))(function() {
+  return discard2(eof)(function() {
     return pure2(true);
   });
 });
 var pFalseShorthand = /* @__PURE__ */ bind2(/* @__PURE__ */ oneOf2(["f", "n", "0"]))(function() {
-  return discard2(withErrorMessage(eof)("end of string"))(function() {
+  return discard2(eof)(function() {
     return pure2(false);
   });
 });
 var pFalseLonghand = /* @__PURE__ */ bind2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("off"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("false"))(/* @__PURE__ */ string("no"))))(function() {
-  return discard2(withErrorMessage(eof)("end of string"))(function() {
+  return discard2(eof)(function() {
     return pure2(false);
   });
 });
-var parser = /* @__PURE__ */ alt3(pTrueLonghand)(/* @__PURE__ */ alt3(pFalseLonghand)(/* @__PURE__ */ alt3(pTrueShorthand)(pFalseShorthand)));
+var parser = /* @__PURE__ */ withErrorMessage(/* @__PURE__ */ $$try(/* @__PURE__ */ alt3(pTrueLonghand)(/* @__PURE__ */ alt3(pFalseLonghand)(/* @__PURE__ */ alt3(pTrueShorthand)(pFalseShorthand)))))("one of [ 't', 'y', '1', 'f', 'n', '0', 'on', 'true', 'yes', 'off', 'false', 'no' ]");
 var parse = /* @__PURE__ */ function() {
   var $7 = lmap(bifunctorEither)(parseErrorMessage);
   var $8 = flip(runParser)(parser);
