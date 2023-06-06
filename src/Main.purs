@@ -49,7 +49,6 @@ pFalseLonghand = do
 -- | A parser for Flatfile specific boolean.
 parser :: Parser String Boolean
 parser = do
-  Parsing.String.Basic.skipSpaces
   Parsing.Combinators.try
     ( pTrueLonghand
         <|> pFalseLonghand
