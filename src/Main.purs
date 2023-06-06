@@ -5,6 +5,7 @@ import Prelude
 import Control.Alt ((<|>))
 import Data.Bifunctor (lmap)
 import Data.Either (Either)
+import Data.String as Str
 import Parsing (Parser)
 import Parsing as Parsing
 import Parsing.Combinators ((<?>))
@@ -46,7 +47,7 @@ pFalseLonghand = do
 
 -- | INTERNAL
 -- |
--- | A parser for Flatfile specific boolean.
+-- | A parser for Flatfile specific booleans.
 parser :: Parser String Boolean
 parser = do
   Parsing.Combinators.try
@@ -58,4 +59,6 @@ parser = do
 
 -- | Parse a string as a possible boolean.
 parse :: String -> Either String Boolean
-parse = lmap Parsing.parseErrorMessage <<< flip Parsing.runParser parser
+parse = lmap Parsing.parseErrorMessage
+  <<< flip Parsing.runParser parser
+  <<< (Str.toLower <<< Str.trim)
