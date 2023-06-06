@@ -14,6 +14,9 @@ import Test.Spec.Runner (runSpec)
 main :: Effect Unit
 main = launchAff_ $ runSpec [consoleReporter] do
   describe "parse" do
+    let
+      errMsg = "Expected one of [ 't', 'y', '1', 'f', 'n', '0', 'on', 'true', 'yes', 'off', 'false', 'no' ]"
+      dummyMsg = "foobar"
     it "should handle 't' shorthand" do
       let
         actual = parse "t"
@@ -77,35 +80,35 @@ main = launchAff_ $ runSpec [consoleReporter] do
     it "should fail on 't' shorthand" do
       let
         actual = parse "tx"
-        expected = "Expected end of string"
-      (fromLeft "uh-oh" actual) `shouldEqual` expected
+        expected = errMsg
+      (fromLeft dummyMsg actual) `shouldEqual` expected
     it "should fail on 'y' shorthand" do
       let
         actual = parse "yx"
-        expected = "Expected end of string"
-      (fromLeft "uh-oh" actual) `shouldEqual` expected
+        expected = errMsg
+      (fromLeft dummyMsg actual) `shouldEqual` expected
     it "should fail on '1' shorthand" do
       let
         actual = parse "10"
-        expected = "Expected end of string"
-      (fromLeft "uh-oh" actual) `shouldEqual` expected
+        expected = errMsg
+      (fromLeft dummyMsg actual) `shouldEqual` expected
     it "should fail on unknown shorthand" do
       let
         actual = parse "x"
-        expected = "Expected one of ['f','n','0']"
-      (fromLeft "uh-oh" actual) `shouldEqual` expected
+        expected = errMsg
+      (fromLeft dummyMsg actual) `shouldEqual` expected
     it "should fail on 'f' shorthand" do
       let
         actual = parse "foo"
-        expected = "Expected end of string"
-      (fromLeft "uh-oh" actual) `shouldEqual` expected
+        expected = errMsg
+      (fromLeft dummyMsg actual) `shouldEqual` expected
     it "should fail on 'n' shorthand" do
       let
         actual = parse "nx"
-        expected = "Expected end of string"
-      (fromLeft "uh-oh" actual) `shouldEqual` expected
+        expected = errMsg
+      (fromLeft dummyMsg actual) `shouldEqual` expected
     it "should fail on '0' shorthand" do
       let
         actual = parse "01"
-        expected = "Expected end of string"
-      (fromLeft "uh-oh" actual) `shouldEqual` expected
+        expected = errMsg
+      (fromLeft dummyMsg actual) `shouldEqual` expected

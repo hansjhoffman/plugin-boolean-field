@@ -2,27 +2,28 @@ module Main (parse) where
 
 import Prelude
 
+import Control.Alt ((<|>))
 import Data.Bifunctor (lmap)
 import Data.Either (Either)
 import Parsing (Parser)
 import Parsing as Parsing
 import Parsing.Combinators ((<?>))
+import Parsing.Combinators as Parsing.Combinators
 import Parsing.String as Parsing.String
 import Parsing.String.Basic as Parsing.String.Basic
-import Control.Alt ((<|>))
 
 -- | INTERNAL
 pTrueShorthand :: Parser String Boolean
 pTrueShorthand = do
   _ <- Parsing.String.Basic.oneOf [ 't', 'y', '1' ]
-  Parsing.String.eof <?> "end of string"
+  Parsing.String.eof
   pure true
 
 -- | INTERNAL
 pFalseShorthand :: Parser String Boolean
 pFalseShorthand = do
   _ <- Parsing.String.Basic.oneOf [ 'f', 'n', '0' ]
-  Parsing.String.eof <?> "end of string"
+  Parsing.String.eof
   pure false
 
 -- | INTERNAL
@@ -31,7 +32,7 @@ pTrueLonghand = do
   _ <- Parsing.String.string "on"
     <|> Parsing.String.string "true"
     <|> Parsing.String.string "yes"
-  Parsing.String.eof <?> "end of string"
+  Parsing.String.eof
   pure true
 
 -- | INTERNAL
@@ -40,17 +41,21 @@ pFalseLonghand = do
   _ <- Parsing.String.string "off"
     <|> Parsing.String.string "false"
     <|> Parsing.String.string "no"
-  Parsing.String.eof <?> "end of string"
+  Parsing.String.eof
   pure false
 
 -- | INTERNAL
 -- |
 -- | A parser for Flatfile specific boolean.
 parser :: Parser String Boolean
-parser = pTrueLonghand
-  <|> pFalseLonghand
-  <|> pTrueShorthand
-  <|> pFalseShorthand
+parser = do
+  Parsing.String.Basic.skipSpaces
+  Parsing.Combinators.try
+    ( pTrueLonghand
+        <|> pFalseLonghand
+        <|> pTrueShorthand
+        <|> pFalseShorthand
+    ) <?> "one of [ 't', 'y', '1', 'f', 'n', '0', 'on', 'true', 'yes', 'off', 'false', 'no' ]"
 
 -- | Parse a string as a possible boolean.
 parse :: String -> Either String Boolean
