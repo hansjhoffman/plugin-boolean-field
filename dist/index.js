@@ -52,25 +52,24 @@ var alt = function(dict) {
   return dict.alt;
 };
 
+// output/Control.Apply/index.js
+var identity2 = /* @__PURE__ */ identity(categoryFn);
+var apply = function(dict) {
+  return dict.apply;
+};
+var applySecond = function(dictApply) {
+  var apply1 = apply(dictApply);
+  var map2 = map(dictApply.Functor0());
+  return function(a) {
+    return function(b) {
+      return apply1(map2($$const(identity2))(a))(b);
+    };
+  };
+};
+
 // output/Control.Applicative/index.js
 var pure = function(dict) {
   return dict.pure;
-};
-
-// output/Control.Bind/index.js
-var discard = function(dict) {
-  return dict.discard;
-};
-var bind = function(dict) {
-  return dict.bind;
-};
-var bindFlipped = function(dictBind) {
-  return flip(bind(dictBind));
-};
-var discardUnit = {
-  discard: function(dictBind) {
-    return bind(dictBind);
-  }
 };
 
 // output/Data.Bounded/foreign.js
@@ -419,14 +418,14 @@ var fst = function(v) {
 };
 
 // output/Data.Bifunctor/index.js
-var identity2 = /* @__PURE__ */ identity(categoryFn);
+var identity3 = /* @__PURE__ */ identity(categoryFn);
 var bimap = function(dict) {
   return dict.bimap;
 };
 var lmap = function(dictBifunctor) {
   var bimap1 = bimap(dictBifunctor);
   return function(f) {
-    return bimap1(f)(identity2);
+    return bimap1(f)(identity3);
   };
 };
 var bifunctorEither = {
@@ -445,6 +444,27 @@ var bifunctorEither = {
       };
     };
   }
+};
+
+// output/Data.String.Common/foreign.js
+var toLower = function(s) {
+  return s.toLowerCase();
+};
+var trim = function(s) {
+  return s.trim();
+};
+
+// output/Data.String.Common/index.js
+var $$null = function(s) {
+  return s === "";
+};
+
+// output/Control.Bind/index.js
+var bind = function(dict) {
+  return dict.bind;
+};
+var bindFlipped = function(dictBind) {
+  return flip(bind(dictBind));
 };
 
 // output/Control.Monad.Error.Class/index.js
@@ -1321,11 +1341,6 @@ var stripPrefix = function(v) {
   };
 };
 
-// output/Data.String.Common/index.js
-var $$null = function(s) {
-  return s === "";
-};
-
 // output/Data.String.CodePoints/index.js
 var $runtime_lazy = function(name2, moduleName, init3) {
   var state2 = 0;
@@ -1695,36 +1710,19 @@ var oneOf2 = function(ss) {
 };
 
 // output/Main/index.js
-var bind2 = /* @__PURE__ */ bind(bindParserT);
-var discard2 = /* @__PURE__ */ discard(discardUnit)(bindParserT);
+var applySecond2 = /* @__PURE__ */ applySecond(applyParserT);
 var pure2 = /* @__PURE__ */ pure(applicativeParserT);
 var alt3 = /* @__PURE__ */ alt(altParserT);
-var pTrueShorthand = /* @__PURE__ */ bind2(/* @__PURE__ */ oneOf2(["t", "y", "1"]))(function() {
-  return discard2(eof)(function() {
-    return pure2(true);
-  });
-});
-var pTrueLonghand = /* @__PURE__ */ bind2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("on"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("true"))(/* @__PURE__ */ string("yes"))))(function() {
-  return discard2(eof)(function() {
-    return pure2(true);
-  });
-});
-var pFalseShorthand = /* @__PURE__ */ bind2(/* @__PURE__ */ oneOf2(["f", "n", "0"]))(function() {
-  return discard2(eof)(function() {
-    return pure2(false);
-  });
-});
-var pFalseLonghand = /* @__PURE__ */ bind2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("off"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("false"))(/* @__PURE__ */ string("no"))))(function() {
-  return discard2(eof)(function() {
-    return pure2(false);
-  });
-});
+var pTrueShorthand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ oneOf2(["t", "y", "1"]))(eof))(/* @__PURE__ */ pure2(true));
+var pTrueLonghand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("on"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("true"))(/* @__PURE__ */ string("yes"))))(eof))(/* @__PURE__ */ pure2(true));
+var pFalseShorthand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ oneOf2(["f", "n", "0"]))(eof))(/* @__PURE__ */ pure2(false));
+var pFalseLonghand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("off"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("false"))(/* @__PURE__ */ string("no"))))(eof))(/* @__PURE__ */ pure2(false));
 var parser = /* @__PURE__ */ withErrorMessage(/* @__PURE__ */ $$try(/* @__PURE__ */ alt3(pTrueLonghand)(/* @__PURE__ */ alt3(pFalseLonghand)(/* @__PURE__ */ alt3(pTrueShorthand)(pFalseShorthand)))))("one of [ 't', 'y', '1', 'f', 'n', '0', 'on', 'true', 'yes', 'off', 'false', 'no' ]");
 var parse = /* @__PURE__ */ function() {
-  var $7 = lmap(bifunctorEither)(parseErrorMessage);
-  var $8 = flip(runParser)(parser);
-  return function($9) {
-    return $7($8($9));
+  var $5 = lmap(bifunctorEither)(parseErrorMessage);
+  var $6 = flip(runParser)(parser);
+  return function($7) {
+    return $5($6(toLower(trim($7))));
   };
 }();
 export {
