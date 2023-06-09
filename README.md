@@ -1,6 +1,6 @@
 # plugin-boolean-field
 
-> parser for Flatfile boolean fields
+> Parser for Flatfile boolean fields
 
 ## License
 

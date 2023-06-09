@@ -1,8 +1,8 @@
 { name = "my-project"
 , dependencies =
   [ "bifunctors", "control", "either", "parsing", "prelude", "strings" ]
-, license = ""
+, license = "BSD-3-Clause"
 , packages = ./packages.dhall
-, repository = ""
+, repository = "https://github.com/hansjhoffman/plugin-boolean-field"
 , sources = [ "src/**/*.purs" ]
 }
