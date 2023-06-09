@@ -15,35 +15,37 @@ import Parsing.String.Basic as Parsing.String.Basic
 
 -- | INTERNAL
 pTrueShorthand :: Parser String Boolean
-pTrueShorthand = do
-  _ <- Parsing.String.Basic.oneOf [ 't', 'y', '1' ]
-  Parsing.String.eof
-  pure true
+pTrueShorthand =
+  Parsing.String.Basic.oneOf [ 't', 'y', '1' ]
+    *> Parsing.String.eof
+    *> pure true
 
 -- | INTERNAL
 pFalseShorthand :: Parser String Boolean
-pFalseShorthand = do
-  _ <- Parsing.String.Basic.oneOf [ 'f', 'n', '0' ]
-  Parsing.String.eof
-  pure false
+pFalseShorthand =
+  Parsing.String.Basic.oneOf [ 'f', 'n', '0' ]
+    *> Parsing.String.eof
+    *> pure false
 
 -- | INTERNAL
 pTrueLonghand :: Parser String Boolean
-pTrueLonghand = do
-  _ <- Parsing.String.string "on"
-    <|> Parsing.String.string "true"
-    <|> Parsing.String.string "yes"
-  Parsing.String.eof
-  pure true
+pTrueLonghand =
+  ( Parsing.String.string "on"
+      <|> Parsing.String.string "true"
+      <|> Parsing.String.string "yes"
+  )
+    *> Parsing.String.eof
+    *> pure true
 
 -- | INTERNAL
 pFalseLonghand :: Parser String Boolean
-pFalseLonghand = do
-  _ <- Parsing.String.string "off"
-    <|> Parsing.String.string "false"
-    <|> Parsing.String.string "no"
-  Parsing.String.eof
-  pure false
+pFalseLonghand =
+  ( Parsing.String.string "off"
+      <|> Parsing.String.string "false"
+      <|> Parsing.String.string "no"
+  )
+    *> Parsing.String.eof
+    *> pure false
 
 -- | INTERNAL
 -- |
