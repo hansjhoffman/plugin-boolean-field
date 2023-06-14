@@ -1718,7 +1718,7 @@ var pTrueLonghand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/*
 var pFalseShorthand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ oneOf2(["f", "n", "0"]))(eof))(/* @__PURE__ */ pure2(false));
 var pFalseLonghand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("off"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("false"))(/* @__PURE__ */ string("no"))))(eof))(/* @__PURE__ */ pure2(false));
 var parser = /* @__PURE__ */ withErrorMessage(/* @__PURE__ */ $$try(/* @__PURE__ */ alt3(pTrueLonghand)(/* @__PURE__ */ alt3(pFalseLonghand)(/* @__PURE__ */ alt3(pTrueShorthand)(pFalseShorthand)))))("one of [ 't', 'y', '1', 'f', 'n', '0', 'on', 'true', 'yes', 'off', 'false', 'no' ]");
-var parse = /* @__PURE__ */ function() {
+var parse_ = /* @__PURE__ */ function() {
   var $5 = lmap(bifunctorEither)(parseErrorMessage);
   var $6 = flip(runParser)(parser);
   return function($7) {
@@ -1726,6 +1726,6 @@ var parse = /* @__PURE__ */ function() {
   };
 }();
 export {
-  parse
+  parse_
 };
 //# sourceMappingURL=index.js.map
