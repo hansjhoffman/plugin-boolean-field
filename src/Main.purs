@@ -61,7 +61,7 @@ parser = do
         <|> pFalseLonghand
         <|> pTrueShorthand
         <|> pFalseShorthand
-    ) <?> "one of [ 't', 'y', '1', 'f', 'n', '0', 'on', 'true', 'yes', 'off', 'false', 'no' ]"
+    ) <?> "one of [ 't', 'f', 'y', 'n', '1', '0', 'on', 'off', 'yes', 'no', 'true', 'false' ]"
 
 -- | Parse a string as a possible boolean.
 parse_ :: String -> Either String Boolean

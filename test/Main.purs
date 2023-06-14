@@ -15,7 +15,7 @@ main :: Effect Unit
 main = launchAff_ $ runSpec [consoleReporter] do
   describe "parse_" do
     let
-      errMsg = "Expected one of [ 't', 'y', '1', 'f', 'n', '0', 'on', 'true', 'yes', 'off', 'false', 'no' ]"
+      errMsg = "Expected one of [ 't', 'f', 'y', 'n', '1', '0', 'on', 'off', 'yes', 'no', 'true', 'false' ]"
       dummyMsg = "foobar"
     it "should handle 't' shorthand" do
       let
