@@ -1,4 +1,4 @@
-module Main (parse) where
+module Main (parse_) where
 
 import Prelude
 
@@ -60,7 +60,7 @@ parser = do
     ) <?> "one of [ 't', 'y', '1', 'f', 'n', '0', 'on', 'true', 'yes', 'off', 'false', 'no' ]"
 
 -- | Parse a string as a possible boolean.
-parse :: String -> Either String Boolean
-parse = lmap Parsing.parseErrorMessage
+parse_ :: String -> Either String Boolean
+parse_ = lmap Parsing.parseErrorMessage
   <<< flip Parsing.runParser parser
   <<< (Str.toLower <<< Str.trim)
