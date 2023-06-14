@@ -353,6 +353,22 @@ var Right = /* @__PURE__ */ function() {
   };
   return Right2;
 }();
+var either = function(v) {
+  return function(v1) {
+    return function(v2) {
+      if (v2 instanceof Left) {
+        return v(v2.value0);
+      }
+      ;
+      if (v2 instanceof Right) {
+        return v1(v2.value0);
+      }
+      ;
+      throw new Error("Failed pattern match at Data.Either (line 208, column 1 - line 208, column 64): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
+    };
+  };
+};
+var isRight = /* @__PURE__ */ either(/* @__PURE__ */ $$const(false))(/* @__PURE__ */ $$const(true));
 
 // output/Control.Lazy/index.js
 var defer = function(dict) {
@@ -1725,7 +1741,9 @@ var parse_ = /* @__PURE__ */ function() {
     return $5($6(toLower(trim($7))));
   };
 }();
+var isRight_ = isRight;
 export {
+  isRight_,
   parse_
 };
 //# sourceMappingURL=index.js.map

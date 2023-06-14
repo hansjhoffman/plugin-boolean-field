@@ -1,10 +1,14 @@
-module Main (parse_) where
+module Main
+  ( isRight_
+  , parse_
+  ) where
 
 import Prelude
 
 import Control.Alt ((<|>))
 import Data.Bifunctor (lmap)
 import Data.Either (Either)
+import Data.Either as Data.Either
 import Data.String as Str
 import Parsing (Parser)
 import Parsing as Parsing
@@ -64,3 +68,6 @@ parse_ :: String -> Either String Boolean
 parse_ = lmap Parsing.parseErrorMessage
   <<< flip Parsing.runParser parser
   <<< (Str.toLower <<< Str.trim)
+
+isRight_ :: forall a b. Either a b -> Boolean
+isRight_ = Data.Either.isRight
