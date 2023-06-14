@@ -46,7 +46,7 @@ build: ## Make a production build
 
 .PHONY: bundle
 bundle: ## Bundle
-	spago bundle-module --main Main --to dist/index.js --source-maps --platform node
+	spago bundle-module --main Main --to dist/index.js --platform node
 
 # Development targets
 # -------------------

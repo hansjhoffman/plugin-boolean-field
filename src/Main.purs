@@ -69,5 +69,7 @@ parse_ = lmap Parsing.parseErrorMessage
   <<< flip Parsing.runParser parser
   <<< (Str.toLower <<< Str.trim)
 
+-- | How we get around the fact that the bundler (via dead code elimination) does not export
+-- | a way to operate on the 'Either' JS class instead of TS discriminated union types.
 isRight_ :: forall a b. Either a b -> Boolean
 isRight_ = Data.Either.isRight
