@@ -12,7 +12,7 @@ import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
 
 main :: Effect Unit
-main = launchAff_ $ runSpec [consoleReporter] do
+main = launchAff_ $ runSpec [ consoleReporter ] do
   describe "parse_" do
     let
       errMsg = "Expected one of [ 't', 'f', 'y', 'n', '1', '0', 'on', 'off', 'yes', 'no', 'true', 'false' ]"
