@@ -55,7 +55,7 @@ pFalseLonghand =
 -- |
 -- | A parser for Flatfile specific booleans.
 parser :: Parser String Boolean
-parser = do
+parser =
   Parsing.Combinators.try
     ( pTrueLonghand
         <|> pFalseLonghand
