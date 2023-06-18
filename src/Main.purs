@@ -5,71 +5,64 @@ module Main
 
 import Prelude
 
-import Control.Alt ((<|>))
 import Data.Bifunctor (lmap)
-import Data.Either (Either)
-import Data.Either as Data.Either
-import Data.String as Str
+import Data.Either (Either, isRight)
+import Data.String as String
 import Parsing (Parser)
 import Parsing as Parsing
-import Parsing.Combinators ((<?>))
-import Parsing.Combinators as Parsing.Combinators
-import Parsing.String as Parsing.String
-import Parsing.String.Basic as Parsing.String.Basic
-
--- | INTERNAL
-pTrueShorthand :: Parser String Boolean
-pTrueShorthand =
-  Parsing.String.Basic.oneOf [ 't', 'y', '1' ]
-    *> Parsing.String.eof
-    *> pure true
-
--- | INTERNAL
-pFalseShorthand :: Parser String Boolean
-pFalseShorthand =
-  Parsing.String.Basic.oneOf [ 'f', 'n', '0' ]
-    *> Parsing.String.eof
-    *> pure false
-
--- | INTERNAL
-pTrueLonghand :: Parser String Boolean
-pTrueLonghand =
-  ( Parsing.String.string "on"
-      <|> Parsing.String.string "true"
-      <|> Parsing.String.string "yes"
-  )
-    *> Parsing.String.eof
-    *> pure true
-
--- | INTERNAL
-pFalseLonghand :: Parser String Boolean
-pFalseLonghand =
-  ( Parsing.String.string "off"
-      <|> Parsing.String.string "false"
-      <|> Parsing.String.string "no"
-  )
-    *> Parsing.String.eof
-    *> pure false
+import Parsing.Combinators (choice, try, (<?>))
+import Parsing.String (eof, string)
+import Parsing.String.Basic (oneOf)
 
 -- | INTERNAL
 -- |
 -- | A parser for Flatfile specific booleans.
 parser :: Parser String Boolean
 parser =
-  Parsing.Combinators.try
-    ( pTrueLonghand
-        <|> pFalseLonghand
-        <|> pTrueShorthand
-        <|> pFalseShorthand
+  try
+    ( choice
+        [ pTrueLonghand
+        , pFalseLonghand
+        , pTrueShorthand
+        , pFalseShorthand
+        ]
     ) <?> "one of [ 't', 'f', 'y', 'n', '1', '0', 'on', 'off', 'yes', 'no', 'true', 'false' ]"
+  where
+  pTrueShorthand :: Parser String Boolean
+  pTrueShorthand =
+    oneOf [ 't', 'y', '1' ] *> eof *> pure true
+
+  pFalseShorthand :: Parser String Boolean
+  pFalseShorthand =
+    oneOf [ 'f', 'n', '0' ] *> eof *> pure false
+
+  pTrueLonghand :: Parser String Boolean
+  pTrueLonghand =
+    choice
+      [ string "on"
+      , string "true"
+      , string "yes"
+      ]
+      *> eof
+      *> pure true
+
+  pFalseLonghand :: Parser String Boolean
+  pFalseLonghand =
+    choice
+      [ string "off"
+      , string "false"
+      , string "no"
+      ]
+      *> eof
+      *> pure false
 
 -- | Parse a string as a possible boolean.
 parse_ :: String -> Either String Boolean
 parse_ = lmap Parsing.parseErrorMessage
   <<< flip Parsing.runParser parser
-  <<< (Str.toLower <<< Str.trim)
+  <<< (String.toLower <<< String.trim)
 
 -- | How we get around the fact that the bundler (via dead code elimination) does not export
 -- | a way to operate on the 'Either' JS class instead of TS discriminated union types.
 isRight_ :: forall a b. Either a b -> Boolean
-isRight_ = Data.Either.isRight
+isRight_ = isRight
