@@ -47,11 +47,6 @@ var map = function(dict) {
   return dict.map;
 };
 
-// output/Control.Alt/index.js
-var alt = function(dict) {
-  return dict.alt;
-};
-
 // output/Control.Apply/index.js
 var identity2 = /* @__PURE__ */ identity(categoryFn);
 var apply = function(dict) {
@@ -70,6 +65,16 @@ var applySecond = function(dictApply) {
 // output/Control.Applicative/index.js
 var pure = function(dict) {
   return dict.pure;
+};
+
+// output/Data.Semigroup/index.js
+var append = function(dict) {
+  return dict.append;
+};
+
+// output/Control.Alt/index.js
+var alt = function(dict) {
+  return dict.alt;
 };
 
 // output/Data.Bounded/foreign.js
@@ -257,8 +262,8 @@ var showStringImpl = function(s) {
           return "\\v";
       }
       var k = i + 1;
-      var empty2 = k < l && s[k] >= "0" && s[k] <= "9" ? "\\&" : "";
-      return "\\" + c.charCodeAt(0).toString(10) + empty2;
+      var empty3 = k < l && s[k] >= "0" && s[k] <= "9" ? "\\&" : "";
+      return "\\" + c.charCodeAt(0).toString(10) + empty3;
     }
   ) + '"';
 };
@@ -289,6 +294,7 @@ var showArray = function(dictShow) {
 };
 
 // output/Data.Maybe/index.js
+var identity3 = /* @__PURE__ */ identity(categoryFn);
 var Nothing = /* @__PURE__ */ function() {
   function Nothing2() {
   }
@@ -322,6 +328,9 @@ var maybe = function(v) {
   };
 };
 var isJust = /* @__PURE__ */ maybe(false)(/* @__PURE__ */ $$const(true));
+var fromMaybe = function(a) {
+  return maybe(a)(identity3);
+};
 var fromJust = function() {
   return function(v) {
     if (v instanceof Just) {
@@ -415,6 +424,11 @@ var euclideanRingInt = {
   }
 };
 
+// output/Data.Monoid/index.js
+var mempty = function(dict) {
+  return dict.mempty;
+};
+
 // output/Data.Tuple/index.js
 var Tuple = /* @__PURE__ */ function() {
   function Tuple2(value0, value1) {
@@ -434,14 +448,14 @@ var fst = function(v) {
 };
 
 // output/Data.Bifunctor/index.js
-var identity3 = /* @__PURE__ */ identity(categoryFn);
+var identity4 = /* @__PURE__ */ identity(categoryFn);
 var bimap = function(dict) {
   return dict.bimap;
 };
 var lmap = function(dictBifunctor) {
   var bimap1 = bimap(dictBifunctor);
   return function(f) {
-    return bimap1(f)(identity3);
+    return bimap1(f)(identity4);
   };
 };
 var bifunctorEither = {
@@ -462,17 +476,30 @@ var bifunctorEither = {
   }
 };
 
-// output/Data.String.Common/foreign.js
-var toLower = function(s) {
-  return s.toLowerCase();
+// output/Data.Foldable/foreign.js
+var foldrArray = function(f) {
+  return function(init3) {
+    return function(xs) {
+      var acc = init3;
+      var len = xs.length;
+      for (var i = len - 1; i >= 0; i--) {
+        acc = f(xs[i])(acc);
+      }
+      return acc;
+    };
+  };
 };
-var trim = function(s) {
-  return s.trim();
-};
-
-// output/Data.String.Common/index.js
-var $$null = function(s) {
-  return s === "";
+var foldlArray = function(f) {
+  return function(init3) {
+    return function(xs) {
+      var acc = init3;
+      var len = xs.length;
+      for (var i = 0; i < len; i++) {
+        acc = f(acc)(xs[i]);
+      }
+      return acc;
+    };
+  };
 };
 
 // output/Control.Bind/index.js
@@ -481,6 +508,53 @@ var bind = function(dict) {
 };
 var bindFlipped = function(dictBind) {
   return flip(bind(dictBind));
+};
+
+// output/Control.Plus/index.js
+var empty = function(dict) {
+  return dict.empty;
+};
+
+// output/Unsafe.Coerce/foreign.js
+var unsafeCoerce2 = function(x) {
+  return x;
+};
+
+// output/Safe.Coerce/index.js
+var coerce = function() {
+  return unsafeCoerce2;
+};
+
+// output/Data.Newtype/index.js
+var coerce2 = /* @__PURE__ */ coerce();
+var unwrap = function() {
+  return coerce2;
+};
+
+// output/Data.Foldable/index.js
+var foldr = function(dict) {
+  return dict.foldr;
+};
+var foldMapDefaultR = function(dictFoldable) {
+  var foldr2 = foldr(dictFoldable);
+  return function(dictMonoid) {
+    var append2 = append(dictMonoid.Semigroup0());
+    var mempty2 = mempty(dictMonoid);
+    return function(f) {
+      return foldr2(function(x) {
+        return function(acc) {
+          return append2(f(x))(acc);
+        };
+      })(mempty2);
+    };
+  };
+};
+var foldableArray = {
+  foldr: foldrArray,
+  foldl: foldlArray,
+  foldMap: function(dictMonoid) {
+    return foldMapDefaultR(foldableArray)(dictMonoid);
+  }
 };
 
 // output/Control.Monad.Error.Class/index.js
@@ -616,22 +690,6 @@ var defer2 = function(thunk) {
 };
 var force = function(l) {
   return l();
-};
-
-// output/Unsafe.Coerce/foreign.js
-var unsafeCoerce2 = function(x) {
-  return x;
-};
-
-// output/Safe.Coerce/index.js
-var coerce = function() {
-  return unsafeCoerce2;
-};
-
-// output/Data.Newtype/index.js
-var coerce2 = /* @__PURE__ */ coerce();
-var unwrap = function() {
-  return coerce2;
 };
 
 // output/Data.Traversable/foreign.js
@@ -953,10 +1011,17 @@ var failWithPosition = function(message2) {
 var fail = function(message2) {
   return bindFlipped2(failWithPosition(message2))(position);
 };
+var plusParserT = {
+  empty: /* @__PURE__ */ fail("No alternative"),
+  Alt0: function() {
+    return altParserT;
+  }
+};
 
 // output/Parsing.Combinators/index.js
 var alt2 = /* @__PURE__ */ alt(altParserT);
 var defer3 = /* @__PURE__ */ defer(lazyParserT);
+var empty2 = /* @__PURE__ */ empty(plusParserT);
 var withLazyErrorMessage = function(p) {
   return function(msg) {
     return alt2(p)(defer3(function(v) {
@@ -974,6 +1039,26 @@ var $$try = function(v) {
     return v(v1, more, lift3, function(v2, err) {
       return $$throw(new ParseState(v2.value0, v2.value1, v1.value2), err);
     }, done);
+  };
+};
+var choice = function(dictFoldable) {
+  var go = function(p1) {
+    return function(v) {
+      if (v instanceof Nothing) {
+        return new Just(p1);
+      }
+      ;
+      if (v instanceof Just) {
+        return new Just(alt2(p1)(v.value0));
+      }
+      ;
+      throw new Error("Failed pattern match at Parsing.Combinators (line 358, column 11 - line 360, column 32): " + [v.constructor.name]);
+    };
+  };
+  var $95 = fromMaybe(empty2);
+  var $96 = foldr(dictFoldable)(go)(Nothing.value);
+  return function($97) {
+    return $95($96($97));
   };
 };
 
@@ -1357,6 +1442,11 @@ var stripPrefix = function(v) {
   };
 };
 
+// output/Data.String.Common/index.js
+var $$null = function(s) {
+  return s === "";
+};
+
 // output/Data.String.CodePoints/index.js
 var $runtime_lazy = function(name2, moduleName, init3) {
   var state2 = 0;
@@ -1728,17 +1818,19 @@ var oneOf2 = function(ss) {
 // output/Main/index.js
 var applySecond2 = /* @__PURE__ */ applySecond(applyParserT);
 var pure2 = /* @__PURE__ */ pure(applicativeParserT);
-var alt3 = /* @__PURE__ */ alt(altParserT);
-var pTrueShorthand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ oneOf2(["t", "y", "1"]))(eof))(/* @__PURE__ */ pure2(true));
-var pTrueLonghand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("on"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("true"))(/* @__PURE__ */ string("yes"))))(eof))(/* @__PURE__ */ pure2(true));
-var pFalseShorthand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ oneOf2(["f", "n", "0"]))(eof))(/* @__PURE__ */ pure2(false));
-var pFalseLonghand = /* @__PURE__ */ applySecond2(/* @__PURE__ */ applySecond2(/* @__PURE__ */ alt3(/* @__PURE__ */ string("off"))(/* @__PURE__ */ alt3(/* @__PURE__ */ string("false"))(/* @__PURE__ */ string("no"))))(eof))(/* @__PURE__ */ pure2(false));
-var parser = /* @__PURE__ */ withErrorMessage(/* @__PURE__ */ $$try(/* @__PURE__ */ alt3(pTrueLonghand)(/* @__PURE__ */ alt3(pFalseLonghand)(/* @__PURE__ */ alt3(pTrueShorthand)(pFalseShorthand)))))("one of [ 't', 'f', 'y', 'n', '1', '0', 'on', 'off', 'yes', 'no', 'true', 'false' ]");
+var choice2 = /* @__PURE__ */ choice(foldableArray);
+var parser = /* @__PURE__ */ function() {
+  var pTrueShorthand = applySecond2(applySecond2(oneOf2(["t", "y", "1"]))(eof))(pure2(true));
+  var pTrueLonghand = applySecond2(applySecond2(choice2([string("on"), string("true"), string("yes")]))(eof))(pure2(true));
+  var pFalseShorthand = applySecond2(applySecond2(oneOf2(["f", "n", "0"]))(eof))(pure2(false));
+  var pFalseLonghand = applySecond2(applySecond2(choice2([string("off"), string("false"), string("no")]))(eof))(pure2(false));
+  return withErrorMessage($$try(choice2([pTrueLonghand, pFalseLonghand, pTrueShorthand, pFalseShorthand])))("one of [ 't', 'f', 'y', 'n', '1', '0', 'on', 'off', 'yes', 'no', 'true', 'false' ]");
+}();
 var parse_ = /* @__PURE__ */ function() {
   var $5 = lmap(bifunctorEither)(parseErrorMessage);
   var $6 = flip(runParser)(parser);
   return function($7) {
-    return $5($6(toLower(trim($7))));
+    return $5($6($7));
   };
 }();
 var isRight_ = isRight;
