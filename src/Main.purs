@@ -7,7 +7,6 @@ import Prelude
 
 import Data.Bifunctor (lmap)
 import Data.Either (Either, isRight)
-import Data.String as String
 import Parsing (Parser)
 import Parsing as Parsing
 import Parsing.Combinators (choice, try, (<?>))
@@ -60,7 +59,6 @@ parser =
 parse_ :: String -> Either String Boolean
 parse_ = lmap Parsing.parseErrorMessage
   <<< flip Parsing.runParser parser
-  <<< (String.toLower <<< String.trim)
 
 -- | How we get around the fact that the bundler (via dead code elimination) does not export
 -- | a way to operate on the 'Either' JS class instead of TS discriminated union types.
