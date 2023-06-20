@@ -13,8 +13,6 @@ import Test.Utils (assertLeft, assertRight)
 main :: Effect Unit
 main = launchAff_ $ runSpec [ consoleReporter ] do
   describe "parse_" do
-    let
-      errMsg = "Expected one of [ 't', 'f', 'y', 'n', '1', '0', 'on', 'off', 'yes', 'no', 'true', 'false' ]"
     it "should handle all valid shorthand values" do
       assertRight (parse_ "t") true
       assertRight (parse_ "y") true
@@ -30,6 +28,8 @@ main = launchAff_ $ runSpec [ consoleReporter ] do
       assertRight (parse_ "no") false
       assertRight (parse_ "off") false
     it "should fail on 'close' values" do
+      let
+        errMsg = "Expected one of [ 't', 'f', 'y', 'n', '1', '0', 'on', 'off', 'yes', 'no', 'true', 'false' ]"
       assertLeft (parse_ "tr") errMsg
       assertLeft (parse_ "ye") errMsg
       assertLeft (parse_ "10") errMsg
